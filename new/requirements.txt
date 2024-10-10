@@ -1,0 +1,5 @@
+feedparser
+SQLAlchemy
+celery
+spacy
+psycopg2-binary
