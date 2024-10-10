@@ -1,0 +1,76 @@
+Table of Contents
+
+Overview
+System Architecture
+Design Choices
+Implemented Logic
+Usage
+Future Improvements
+Overview
+This project aims to collect news articles from various RSS feeds, categorize them into predefined categories, and store them in a PostgreSQL database. The application utilizes Celery for asynchronous task processing, ensuring that the parsing and database operations do not block the main application flow.
+
+System Architecture
+RSS Feed Parser: Uses the feedparser library to extract news articles from specified RSS feeds.
+Database Layer: Utilizes SQLAlchemy for ORM-based interaction with a PostgreSQL database, which stores the articles.
+Task Queue: Implements Celery to manage tasks asynchronously.
+Categorization Logic: Implements a keyword-based categorization system to classify articles into categories like Terrorism, Positive/Uplifting, Natural Disasters, and Others.
+Design Choices
+1. Technology Stack
+Python: The primary programming language used for implementing the application.
+PostgreSQL: Chosen as the database due to its robustness and support for advanced data types.
+Celery: Selected for its simplicity and effectiveness in managing background tasks.
+2. Database Schema
+The database schema consists of a single table, news_articles, with the following columns:
+
+id: Unique identifier for each article (Primary Key).
+title: The title of the article (String).
+content: The content of the article (Text).
+published_at: The publication date of the article (DateTime).
+source_url: The URL of the article (String).
+category: The category under which the article falls (String).
+3. Categorization Logic
+The categorization logic is based on a predefined set of keywords associated with each category. The logic was designed to ensure that articles are categorized accurately based on their content. The categories and their corresponding keywords are as follows:
+
+Terrorism / protest / political unrest / riot: Keywords include ["terror", "protest", "riot", "unrest", "violence"].
+Positive/Uplifting: Keywords include ["hope", "success", "win", "achieve", "positive"].
+Natural Disasters: Keywords include ["earthquake", "flood", "hurricane", "disaster", "storm"].
+Others: Articles that do not match any of the above categories fall under this category.
+Implemented Logic
+RSS Feed Parsing:
+
+The application fetches articles from specified RSS feeds using the feedparser library.
+Each article's title, content, published date, and source URL are extracted.
+Date Parsing:
+
+The publication date is parsed and converted into a datetime object for storage in the database.
+Article Categorization:
+
+Each article is categorized based on its content using the predefined keyword lists.
+If none of the keywords match, the article is assigned to the "Others" category.
+Database Interaction:
+
+New articles are added to the news_articles table using SQLAlchemy's ORM features.
+Error handling is implemented to ensure that any issues during database operations are logged and managed properly.
+Asynchronous Task Processing:
+
+The process_articles function is decorated with Celery’s task decorator to allow asynchronous execution.
+The function is designed to be called from a background worker process, freeing up the main application thread.
+Usage
+Install the required packages:
+
+bash
+pip install feedparser sqlalchemy psycopg2 celery
+Set up the PostgreSQL database and update the connection string in the code.
+
+Run the Celery worker:
+
+bash
+celery -A tasks worker --loglevel=info
+Execute the main script to start processing articles:
+
+bash
+python main.py
+Future Improvements
+Enhanced Categorization: Implement machine learning algorithms for better categorization of articles.
+Error Handling: Improve error logging and handling mechanisms.
+User Interface: Develop a web interface for users to interact with the application and view articles.
